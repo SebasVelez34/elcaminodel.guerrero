@@ -2,9 +2,12 @@
 
 import { useState } from "react"
 
+import { scoreQuiz } from "@/lib/quiz/score"
+import type { ArchetypeKey, QuizAnswers, QuizQuestion } from "@/lib/quiz/types"
+
 const WA_NUMBER = "573207759895"
 
-const Qs = [
+const Qs: QuizQuestion[] = [
   // EL CHISPA (CH) — Arranca con todo, no termina nada
   {
     t: "Lunes en la mañana. Tienes la semana por delante. ¿Cuál es tu primer movimiento real?",
@@ -160,7 +163,7 @@ const Qs = [
 ]
 
 const archs: Record<
-  string,
+  ArchetypeKey,
   {
     name: string
     badge: string
@@ -263,9 +266,9 @@ const archs: Record<
 export default function QuizPage() {
   const [screen, setScreen] = useState<"intro" | "quiz" | "result">("intro")
   const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState<(number | undefined)[]>([])
+  const [answers, setAnswers] = useState<QuizAnswers>([])
   const [selectedOption, setSelectedOption] = useState<number | null>(null)
-  const [resultKey, setResultKey] = useState<string>("")
+  const [resultKey, setResultKey] = useState<ArchetypeKey | "">("")
 
   const init = () => {
     setScreen("quiz")
@@ -299,15 +302,9 @@ export default function QuizPage() {
   }
 
   const calculateResult = () => {
-    const counts: Record<string, number> = { CH: 0, ES: 0, FA: 0, VO: 0, BL: 0 }
-    answers.forEach((answerIndex, questionIndex) => {
-      if (answerIndex !== undefined) {
-        const key = Qs[questionIndex].opts[answerIndex].x
-        counts[key]++
-      }
-    })
-    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1])
-    setResultKey(sorted[0][0])
+    const score = scoreQuiz(Qs, answers)
+    if (!score) return
+    setResultKey(score.key)
     setScreen("result")
   }
 
@@ -320,7 +317,7 @@ export default function QuizPage() {
   }
 
   const pct = Math.round((currentQuestion / Qs.length) * 100)
-  const arch = archs[resultKey]
+  const arch = resultKey ? archs[resultKey] : undefined
   const waLink = arch ? `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(arch.waMsg)}` : ""
 
   const checklist = [
