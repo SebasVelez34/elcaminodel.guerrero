@@ -20,3 +20,19 @@ export type QuizQuestion = {
 
 /** Indice de la opcion elegida por pregunta; `undefined` = sin responder. */
 export type QuizAnswers = (number | undefined)[]
+
+/** Copy del resultado que se muestra al terminar el test. */
+export type Archetype = {
+  name: string
+  /** Etiqueta corta del patron, se muestra como badge. */
+  badge: string
+  badgeBg: string
+  badgeTx: string
+  accentColor: string
+  tagline: string
+  body: string
+  /** Frases de cierre, una por linea en el resultado. */
+  truths: string[]
+  /** Mensaje precargado del CTA de WhatsApp. */
+  waMsg: string
+}

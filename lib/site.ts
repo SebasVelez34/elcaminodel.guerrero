@@ -14,3 +14,6 @@ export const siteName = "El Camino del Guerrero"
 
 /** Rutas indexables. Al agregar una ruta publica, agregala aqui: alimenta el sitemap. */
 export const publicRoutes = ["/", "/research"] as const
+
+/** Numero de WhatsApp del CTA, en formato internacional sin signos. */
+export const whatsappNumber = "573207759895"

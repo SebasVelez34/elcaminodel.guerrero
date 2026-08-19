@@ -3,73 +3,9 @@
 import { useState } from "react"
 import { submitResearch, type ResearchState } from "@/app/actions/research"
 import { Check } from "lucide-react"
+import { researchQuestions } from "@/content/research/preguntas"
 
-type Question = { key: string; section: string; text: string; sub?: string }
-
-const QUESTIONS: Question[] = [
-  {
-    key: "q1",
-    section: "Dolor actual",
-    text: "¿Qué es lo que más te quita el sueño un domingo a las 10pm?",
-    sub: "Lo que realmente te da vueltas en la cabeza. No la versión presentable.",
-  },
-  {
-    key: "q2",
-    section: "Dolor actual",
-    text: 'En una semana normal, ¿en qué momento del día sientes más que estás "en piloto automático"?',
-    sub: "El momento donde el tiempo pasa sin que tú decidas nada.",
-  },
-  {
-    key: "q3",
-    section: "Intentos fallidos",
-    text: "¿Qué libros, cursos o sistemas has comprado ya para resolver esto? ¿Por qué crees que no funcionaron?",
-    sub: "Sé específico. Nombra lo que probaste.",
-  },
-  {
-    key: "q4",
-    section: "Intentos fallidos",
-    text: '¿Cuánto tiempo llevas sintiendo que "algo tiene que cambiar" sin que cambie?',
-    sub: "En meses o años. El número real.",
-  },
-  {
-    key: "q5",
-    section: "Miedos de trayectoria",
-    text: "¿Qué es lo que más te aterra que pase — o no pase — en los próximos 5 años si todo sigue igual?",
-    sub: "El miedo concreto, no el genérico.",
-  },
-  {
-    key: "q6",
-    section: "Miedos de trayectoria",
-    text: "Si le preguntaras a tu versión de dentro de 10 años qué hiciste con esta década, ¿qué te da miedo que responda?",
-    sub: "No lo suavices.",
-  },
-  {
-    key: "q7",
-    section: "Criterio de éxito",
-    text: '¿Cómo se vería, exactamente, sentir que finalmente estás "encaminado" y construyendo algo que respetas?',
-    sub: "Descríbelo como si ya estuviera pasando.",
-  },
-  {
-    key: "q8",
-    section: "Criterio de éxito",
-    text: '¿Qué tendría que pasar para que dejaras de compararte con dónde "deberías" estar?',
-    sub: "Lo que te daría paz de verdad.",
-  },
-  {
-    key: "q9",
-    section: "Barreras de compra",
-    text: '¿Qué te haría decir "esto no es para mí" al ver un programa como este?',
-    sub: "Tus objeciones reales. Sé honesto.",
-  },
-  {
-    key: "q10",
-    section: "Barreras de compra",
-    text: "¿Qué necesitarías ver u oír para confiar en que esto es distinto a lo anterior que compraste?",
-    sub: "Lo que te haría creer de verdad.",
-  },
-]
-
-const TOTAL_STEPS = QUESTIONS.length + 1 // preguntas + paso de contacto
+const TOTAL_STEPS = researchQuestions.length + 1 // preguntas + paso de contacto
 
 export function ResearchForm() {
   const [step, setStep] = useState(0)
@@ -79,8 +15,8 @@ export function ResearchForm() {
   const [state, setState] = useState<ResearchState>({ ok: false })
   const [isPending, setIsPending] = useState(false)
 
-  const isContactStep = step === QUESTIONS.length
-  const currentQuestion = QUESTIONS[step]
+  const isContactStep = step === researchQuestions.length
+  const currentQuestion = researchQuestions[step]
   const pct = Math.round((step / TOTAL_STEPS) * 100)
 
   const canAdvance = isContactStep ? true : (answers[currentQuestion.key] ?? "").trim().length > 0
@@ -91,7 +27,7 @@ export function ResearchForm() {
 
   const goNext = () => {
     if (!canAdvance) return
-    setStep((s) => Math.min(s + 1, QUESTIONS.length))
+    setStep((s) => Math.min(s + 1, researchQuestions.length))
   }
 
   const goBack = () => {
@@ -103,7 +39,7 @@ export function ResearchForm() {
     const formData = new FormData()
     formData.set("name", name)
     formData.set("contact", contact)
-    QUESTIONS.forEach((q) => formData.set(q.key, answers[q.key] ?? ""))
+    researchQuestions.forEach((q) => formData.set(q.key, answers[q.key] ?? ""))
     const result = await submitResearch({ ok: false }, formData)
     setState(result)
     setIsPending(false)
@@ -134,7 +70,7 @@ export function ResearchForm() {
       <div className="progress-wrap">
         <div className="progress-top">
           <span className="progress-label">
-            {isContactStep ? "Último paso" : `Pregunta ${step + 1} de ${QUESTIONS.length}`}
+            {isContactStep ? "Último paso" : `Pregunta ${step + 1} de ${researchQuestions.length}`}
           </span>
           <span className="progress-pct">{pct}%</span>
         </div>
@@ -222,7 +158,7 @@ export function ResearchForm() {
             className={`btn-primary ${canAdvance ? "" : "disabled"}`}
             onClick={goNext}
           >
-            {step === QUESTIONS.length - 1 ? "Último paso →" : "Siguiente →"}
+            {step === researchQuestions.length - 1 ? "Último paso →" : "Siguiente →"}
           </button>
         )}
       </div>

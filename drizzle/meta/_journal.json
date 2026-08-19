@@ -8,6 +8,13 @@
       "when": 1787175710213,
       "tag": "0000_stale_the_order",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1787176070218,
+      "tag": "0001_warm_vindicator",
+      "breakpoints": true
     }
   ]
 }
