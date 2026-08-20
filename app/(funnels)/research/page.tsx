@@ -4,7 +4,7 @@ import { ResearchForm } from "@/components/research-form"
 export const metadata: Metadata = {
   title: "Investigación — El Camino del Guerrero",
   description:
-    "30 hombres, 10 preguntas honestas. Ayúdanos a construir el MVP de un Sistema de Dirección Personal.",
+    "30 hombres, 5 preguntas honestas. Ayúdanos a construir el MVP de un Sistema de Dirección Personal.",
 }
 
 export default function ResearchPage() {
@@ -37,7 +37,7 @@ export default function ResearchPage() {
 
           <p className="rs-value">
             Esto no es un curso de <strong>&quot;propósito&quot;</strong>. Es una investigación
-            compartida: <strong>30 hombres, 10 preguntas honestas</strong>, para construir el MVP de
+            compartida: <strong>30 hombres, 5 preguntas honestas</strong>, para construir el MVP de
             un Sistema de Dirección Personal — antes de que exista como producto terminado.
           </p>
 
@@ -45,7 +45,7 @@ export default function ResearchPage() {
             Participar en la investigación
           </a>
           <p className="rs-cta-note" style={{ textAlign: "center" }}>
-            Sin pitch, sin venta. 10 minutos, respuestas reales, y acceso prioritario cuando esto se
+            Sin pitch, sin venta. 5 minutos, respuestas reales, y acceso prioritario cuando esto se
             lance.
           </p>
         </div>
@@ -55,7 +55,7 @@ export default function ResearchPage() {
         {/* FORM */}
         <div id="formulario" style={{ scrollMarginTop: "80px" }}>
           <div className="q-text" style={{ marginBottom: "0.25rem" }}>
-            10 preguntas. Sin respuestas correctas.
+            5 preguntas. Sin respuestas correctas.
           </div>
           <p className="q-sub" style={{ marginBottom: "2rem" }}>
             Mientras más honesto, más útil para la investigación.

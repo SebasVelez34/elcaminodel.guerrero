@@ -2,30 +2,39 @@ import { pgTable, uuid, text, timestamp, integer, boolean, jsonb } from "drizzle
 
 import type { ArchetypeKey } from "@/lib/quiz/types"
 
-/** Respuestas del formulario de investigacion (/research). */
-export const researchResponses = pgTable("research_responses", {
+/**
+ * Una pasada por el formulario de investigacion (/research).
+ *
+ * La fila se crea cuando la persona empieza a responder y se completa al
+ * enviar: `completed_at` en null es exactamente un abandono, que es lo que
+ * permite medir tasa de completado sin una tabla aparte.
+ */
+export const researchSubmissions = pgTable("research_submissions", {
   id: uuid("id").primaryKey().defaultRandom(),
+  /** Que version del formulario respondio. Preparado para cuando cambien las preguntas. */
+  formSlug: text("form_slug").notNull().default("direccion-personal"),
+  startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
+  /** null = empezado y nunca enviado. */
+  completedAt: timestamp("completed_at", { withTimezone: true }),
   name: text("name"),
   contact: text("contact"),
+  /** El momento de quiebre: la sospecha del domingo por la noche. */
   q1: text("q1"),
+  /** Inercia o construccion. */
   q2: text("q2"),
+  /** De la informacion a la accion: por que no se convirtio en cambio. */
   q3: text("q3"),
+  /** El costo de no decidir: el miedo a los 40. */
   q4: text("q4"),
+  /** Claridad operacional: la decision que esta postergando. */
   q5: text("q5"),
-  q6: text("q6"),
-  q7: text("q7"),
-  q8: text("q8"),
-  q9: text("q9"),
-  q10: text("q10"),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 })
 
 /**
  * Una pasada por el test de arquetipos.
  *
- * Se crea la fila al empezar y se completa al terminar: `completed_at` en null
- * es exactamente un abandono, que es lo que permite medir tasa de completado.
- * No guarda ningun dato personal, solo el recorrido.
+ * Mismo criterio que arriba: se crea la fila al empezar y se completa al
+ * terminar. No guarda ningun dato personal, solo el recorrido.
  */
 export const quizSessions = pgTable("quiz_sessions", {
   id: uuid("id").primaryKey().defaultRandom(),

@@ -1,7 +1,11 @@
 "use client"
 
-import { useState } from "react"
-import { submitResearch, type ResearchState } from "@/app/actions/research"
+import { useRef, useState } from "react"
+import {
+  startResearchSession,
+  submitResearch,
+  type ResearchState,
+} from "@/app/actions/research"
 import { Check } from "lucide-react"
 import { researchQuestions } from "@/content/research/preguntas"
 
@@ -15,6 +19,26 @@ export function ResearchForm() {
   const [state, setState] = useState<ResearchState>({ ok: false })
   const [isPending, setIsPending] = useState(false)
 
+  /**
+   * Sesion de medicion. Vive en un ref y no en el estado a proposito: llega de
+   * forma asincrona y no debe provocar re-render ni bloquear el formulario.
+   */
+  const sessionId = useRef<string | null>(null)
+  const sessionRequested = useRef(false)
+
+  /**
+   * Se abre con la primera tecla, no al montar el componente: asi "empezo el
+   * formulario" significa que alguien se puso a responder, y no que paso por
+   * la pagina haciendo scroll.
+   */
+  const openSessionOnce = () => {
+    if (sessionRequested.current) return
+    sessionRequested.current = true
+    void startResearchSession().then((id) => {
+      sessionId.current = id
+    })
+  }
+
   const isContactStep = step === researchQuestions.length
   const currentQuestion = researchQuestions[step]
   const pct = Math.round((step / TOTAL_STEPS) * 100)
@@ -22,6 +46,7 @@ export function ResearchForm() {
   const canAdvance = isContactStep ? true : (answers[currentQuestion.key] ?? "").trim().length > 0
 
   const setAnswer = (key: string, value: string) => {
+    openSessionOnce()
     setAnswers((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -37,6 +62,7 @@ export function ResearchForm() {
   const handleSubmit = async () => {
     setIsPending(true)
     const formData = new FormData()
+    if (sessionId.current) formData.set("sessionId", sessionId.current)
     formData.set("name", name)
     formData.set("contact", contact)
     researchQuestions.forEach((q) => formData.set(q.key, answers[q.key] ?? ""))

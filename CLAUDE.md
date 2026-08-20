@@ -17,6 +17,7 @@ pnpm test                # vitest run
 pnpm test:watch
 pnpm test -- score       # un solo archivo por patron de nombre
 pnpm build
+pnpm metrics             # embudo de los dos funnels contra la base (solo lectura)
 ```
 
 Tests unitarios en `tests/unit/**/*.test.{ts,tsx}` (Vitest + jsdom, alias `@/`). **No hay tests e2e**: los funnels se verifican a mano en el navegador.
@@ -32,6 +33,8 @@ pnpm db:studio
 `drizzle.config.ts` carga `.env.development.local` con `process.loadEnvFile` cuando `DATABASE_URL` no esta en el entorno. Ese archivo lo genera `vercel env pull` y esta ignorado por git.
 
 La migracion `drizzle/0000_*.sql` es un **baseline**: la tabla `research_responses` ya existia en Neon antes de que hubiera migraciones, por eso usa `CREATE TABLE IF NOT EXISTS`. Las siguientes son normales — no repitas ese patron.
+
+Cuando un cambio pueda leerse como un rename de tabla, `db:generate` abre un prompt interactivo y **se cuelga en un shell no interactivo**. La salida es generar dos migraciones separadas: primero quitar la tabla vieja del schema y generar, luego agregar la nueva y generar otra vez.
 
 ### Despliegue
 
@@ -80,13 +83,17 @@ tests/unit/
 - El CTA final arma `https://wa.me/${whatsappNumber}` con el mensaje del arquetipo (`whatsappNumber` en [lib/site.ts](lib/site.ts)).
 - Ojo: el `metadata` de [app/layout.tsx](app/layout.tsx) dice "12 preguntas" pero hay 13. Si cambias el numero, sincroniza el copy.
 
-### `/research` — Formulario de investigacion
+### `/research` — Formulario de Validacion de Direccion Personal
 
 `components/research-form.tsx` (wizard, una pregunta por paso) → [app/actions/research.ts](app/actions/research.ts) → [lib/validation/research.ts](lib/validation/research.ts) (zod) → `lib/db` → Neon.
 
-- Contenido de las preguntas en [content/research/preguntas.ts](content/research/preguntas.ts), tipado contra `RESEARCH_QUESTION_KEYS` (que son las columnas de la tabla). Un test verifica que orden y claves coincidan.
+- **5 preguntas** + un paso final opcional de nombre y contacto. Contenido en [content/research/preguntas.ts](content/research/preguntas.ts), tipado contra `RESEARCH_QUESTION_KEYS` (que son las columnas de la tabla). Un test verifica que orden y claves coincidan.
+- **El orden de las preguntas es el argumento**: quiebre emocional → inercia vs. construccion → brecha entre consumo y accion → miedo al tiempo desperdiciado → claridad operacional. No las reordenes sin querer.
+- **Medicion**: la fila de `research_submissions` se abre con la **primera tecla**, no al montar el componente — asi "empezo el formulario" significa que alguien se puso a responder y no que paso haciendo scroll. Se cierra al enviar. `completed_at` en null es un abandono.
+- Si la sesion no llego (fallo la medicion, o es un POST directo), la respuesta **se guarda igual** como fila nueva: perder una respuesta real por un problema de analitica seria mucho peor.
 - El wizard no usa `<form action={...}>` ni `useActionState`: construye el `FormData` a mano y llama a la Server Action con un `_prev` falso.
-- Las 10 preguntas van escritas una por una en el esquema zod a proposito: generarlas con `Object.fromEntries` rompe la inferencia de tipos.
+- Las preguntas van escritas una por una en el esquema zod a proposito: generarlas con `Object.fromEntries` rompe la inferencia de tipos.
+- Si cambias el numero de preguntas, sincroniza el copy de [app/(funnels)/research/page.tsx](<app/(funnels)/research/page.tsx>), que lo menciona en cuatro lugares.
 - `DATABASE_URL` apunta al **pooler** de Neon (host con sufijo `-pooler`), que es lo que hace viable un `Pool` de `pg` en serverless. No lo cambies por `DATABASE_URL_UNPOOLED`.
 
 ### Estilos
@@ -105,7 +112,7 @@ tests/unit/
 2. **Sin CI** — falta workflow que corra `pnpm verify` en cada push/PR.
 3. **Sin blog** — decidido: MDX versionado en el repo bajo `content/blog/`, servido desde `app/(marketing)/`.
 4. **Sin tests e2e** de los funnels.
-5. **No se sabe en que pregunta abandona la gente**: solo si empezo y si termino. El drop-off por pregunta requiere eventos por paso.
+5. **No se sabe en que pregunta abandona la gente**: en ambos funnels solo se registra si empezo y si termino. El drop-off por pregunta requiere eventos por paso.
 6. `/favicon.ico` da 404: hay `icon.svg` en `public/` pero no esta declarado como icono de la app.
 
 ## Convenciones

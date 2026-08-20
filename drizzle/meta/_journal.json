@@ -15,6 +15,20 @@
       "when": 1787176070218,
       "tag": "0001_warm_vindicator",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787256585190,
+      "tag": "0002_lush_ultragirl",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1787256591989,
+      "tag": "0003_tan_korvac",
+      "breakpoints": true
     }
   ]
 }
