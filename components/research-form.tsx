@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
   startResearchSession,
   submitResearch,
@@ -25,6 +25,25 @@ export function ResearchForm() {
    */
   const sessionId = useRef<string | null>(null)
   const sessionRequested = useRef(false)
+
+  /**
+   * Foco automatico del textarea al avanzar de pregunta, pero NO en el
+   * primer render: si el textarea se enfoca al montar, el navegador hace
+   * scroll hasta el, saltandose todo el pitch de la landing antes de que
+   * la persona llegue a leerlo. Se enfoca a partir de la primera vez que
+   * el paso cambia, que es exactamente cuando conviene poder escribir sin
+   * un toque extra.
+   */
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const isFirstRender = useRef(true)
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+    textareaRef.current?.focus()
+  }, [step])
 
   /**
    * Se abre con la primera tecla, no al montar el componente: asi "empezo el
@@ -151,11 +170,11 @@ export function ResearchForm() {
           {currentQuestion.sub && <div className="q-sub">{currentQuestion.sub}</div>}
           <textarea
             key={currentQuestion.key}
+            ref={textareaRef}
             className="rs-wizard-textarea"
             placeholder="Escribe con honestidad, sin filtrar…"
             value={answers[currentQuestion.key] ?? ""}
             onChange={(e) => setAnswer(currentQuestion.key, e.target.value)}
-            autoFocus
           />
         </>
       )}
