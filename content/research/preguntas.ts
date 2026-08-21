@@ -51,7 +51,7 @@ export const researchQuestions: ResearchQuestion[] = [
     // pudo cambiar la trayectoria y no se hizo.
     key: "q4",
     section: "El costo de no decidir",
-    text: "Si dejas que la inercia decida por ti y pasan otros 5 años sin cambios, ¿qué es lo que más te aterra descubrir sobre el hombre que serás a los 40?",
+    text: "Si dejas que la inercia decida por ti y pasan otros 5 años sin cambios, ¿qué es lo que más te aterra descubrir sobre el hombre en el que te habrás convertido?",
     sub: "El miedo concreto, no el genérico. No lo suavices.",
   },
   {

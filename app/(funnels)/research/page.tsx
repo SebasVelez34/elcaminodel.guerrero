@@ -4,7 +4,7 @@ import { ResearchForm } from "@/components/research-form"
 export const metadata: Metadata = {
   title: "Investigación — El Camino del Guerrero",
   description:
-    "30 hombres, 5 preguntas honestas. Ayúdanos a construir el MVP de un Sistema de Dirección Personal.",
+    "Los primeros 30 hombres, 5 preguntas honestas. Ayúdanos a construir el MVP de un Sistema de Dirección Personal.",
 }
 
 export default function ResearchPage() {
@@ -22,7 +22,7 @@ export default function ResearchPage() {
         <div className="rs-hero screen active">
           <div className="intro-eyebrow">Investigación abierta — 30 cupos</div>
           <h1 className="intro-title">
-            Deja de pasar tus 30 decidiendo qué hacer. <span>Empieza a construir.</span>
+            Deja de pasar los años decidiendo qué hacer. <span>Empieza a construir.</span>
           </h1>
           <p className="intro-body">
             Define tu dirección para los próximos 3 años y conviértela en un plan de 90 días.
@@ -37,8 +37,9 @@ export default function ResearchPage() {
 
           <p className="rs-value">
             Esto no es un curso de <strong>&quot;propósito&quot;</strong>. Es una investigación
-            compartida: <strong>30 hombres, 5 preguntas honestas</strong>, para construir el MVP de
-            un Sistema de Dirección Personal — antes de que exista como producto terminado.
+            compartida con los primeros <strong>30 hombres</strong> que participen:{" "}
+            <strong>5 preguntas honestas</strong>, para construir el MVP de un Sistema de Dirección
+            Personal — antes de que exista como producto terminado.
           </p>
 
           <a href="#formulario" className="btn-primary full" style={{ textDecoration: "none" }}>
